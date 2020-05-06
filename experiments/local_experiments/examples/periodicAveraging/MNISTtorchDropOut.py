@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
     messengerHost = 'localhost'
     messengerPort = 5672
-    numberOfNodes = 1
+    numberOfNodes = 2
     updateRule = "SGD"
     learningRate = 0.25
     learningParams = {}
