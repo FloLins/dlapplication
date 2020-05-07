@@ -48,14 +48,30 @@ class DropoutNet(nn.Module):
 
     def safe_model(self):
         #print("Safe the model")
-        torch.save(self.state_dict(), 'weights_only.pth')
+        #if(self.training==False):
+            #print("Safe the model")
+        torch.save(self.state_dict(), './weights_only.pth')
         #torch.save(self, 'entire_model.pth')
 
-    def predict(self, X, times=3):
+    def predict(self, X, times=100):
         self.train(True)
+        total_probs=[0] * 10
         for _ in range(times):
             output = self.forward(X)
-            print (output)
+            #print (output)
+            #print( torch.exp(output))
+            probs = torch.exp(output)
+            #print(output.shape)
+            array = probs[0].data.numpy()
+            #print(array)
+            total_probs=total_probs + array
+        #print(total_probs)
+        prediction = (np.where(total_probs == np.amax(total_probs)))
+        prediction = prediction[0][0]
+        #print(prediction)
+        self.train(False)
+        return prediction
+
 
 
 

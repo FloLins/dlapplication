@@ -17,19 +17,32 @@ from DLplatform.stopping import MaxAmountExamples
 from DLplatform.coordinator import InitializationHandler
 from dlapplication.environments.datasources.dataDecoders.pytorchDataDecoders import MNISTDecoder
 
+def get_next_sample(dataSource):
+    data = dataSource.getNext()
+    image = data[0]
+    image = image[np.newaxis, ...]
+    label = data[1]
+    # print(image.shape)
+    exampleTensor = torch.FloatTensor(image)
+    return exampleTensor, label
+
+
 
 dsFactory = FileDataSourceFactory(filename="../../../../data/textualMNIST/mnist_train.txt", decoder=MNISTDecoder(),
-                                      numberOfNodes=1, indices='roundRobin', shuffle=False, cache=False)
+                                  numberOfNodes=1, indices='roundRobin', shuffle=False, cache=False)
 dataSource=dsFactory.getDataSource(0)
 dataSource.prepare()
-data=dataSource.getNext()
-print(data)
 
 
 model_new = DropoutNet()
 model_new.load_state_dict(torch.load('weights_only.pth'))
-#image = torch.from_numpy(image)
-exampleTensor = torch.FloatTensor(data[0])
-exampleTensor.unsqueeze(3)
-model_new.predict(exampleTensor)
+
+for i_ in range(20):
+    exampleTensor, label = get_next_sample(dataSource)
+    prediction = model_new.predict(exampleTensor)
+    print("Predicted: " + str(prediction) + " for label: " + str(label))
+
+
+
 print(model_new)
+
