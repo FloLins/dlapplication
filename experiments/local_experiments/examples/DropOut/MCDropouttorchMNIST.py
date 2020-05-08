@@ -16,6 +16,7 @@ from DLplatform.learning.factories.pytorchLearnerFactory import PytorchLearnerFa
 from DLplatform.stopping import MaxAmountExamples
 from DLplatform.coordinator import InitializationHandler
 from dlapplication.environments.datasources.dataDecoders.pytorchDataDecoders import MNISTDecoder
+import functions
 
 def get_next_sample(dataSource):
     data = dataSource.getNext()
@@ -28,6 +29,9 @@ def get_next_sample(dataSource):
 
 
 
+
+
+
 dsFactory = FileDataSourceFactory(filename="../../../../data/textualMNIST/mnist_train.txt", decoder=MNISTDecoder(),
                                   numberOfNodes=1, indices='roundRobin', shuffle=False, cache=False)
 dataSource=dsFactory.getDataSource(0)
@@ -37,10 +41,12 @@ dataSource.prepare()
 model_new = DropoutNet()
 model_new.load_state_dict(torch.load('weights_only.pth'))
 
-for i_ in range(20):
+for i_ in range(1):
     exampleTensor, label = get_next_sample(dataSource)
-    prediction = model_new.predict(exampleTensor)
+    prediction, prediction_probs = model_new.predict(exampleTensor)
     print("Predicted: " + str(prediction) + " for label: " + str(label))
+    variance_for_every_classifier=functions.calculate_variance(prediction_probs)
+    deviation_for_every_classifier=functions.calculate_deviation(variance_for_every_classifier)
 
 
 
