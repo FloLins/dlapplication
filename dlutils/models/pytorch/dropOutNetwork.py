@@ -68,7 +68,7 @@ class DropoutNet(nn.Module):
         prediction = prediction[0][0]
         #print(prediction)
         self.train(False)
-        return prediction, predictions_prob
+        return prediction, predictions_prob, summed_probs
 
 
 

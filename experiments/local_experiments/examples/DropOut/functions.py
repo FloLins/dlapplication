@@ -1,7 +1,6 @@
 import numpy as np
 
 
-
 def calculate_variance(prediction_probs):
     mean_for_every_classifier = []
     variance_for_every_classifier=[]
@@ -25,6 +24,32 @@ def calculate_variance(prediction_probs):
     #print(variance_for_every_classifier)
     return variance_for_every_classifier
 
+
 def calculate_deviation(variance_for_every_classifier):
     deviation_for_every_classifier=np.sqrt(variance_for_every_classifier)
     return deviation_for_every_classifier
+
+
+def compute_shannon_entropie(summed_probs):
+    #print(summed_probs)
+    information=-np.log2(summed_probs)
+    mul = np.multiply(summed_probs,information)
+    #print(mul)
+    sum = np.sum(mul)
+    #print(sum)
+    return sum
+
+
+def compute_min_entropy(summed_probs):
+    p1 = np.amax(summed_probs)
+    information=-np.log2(p1)
+    #print(information)
+    return information
+
+
+def compute_guessing_entropy(summed_probs):
+    summed_probs=-np.sort(-summed_probs)
+    g_entropy=0
+    for i in range(len(summed_probs)):
+        g_entropy=i*summed_probs[i]
+    return g_entropy
