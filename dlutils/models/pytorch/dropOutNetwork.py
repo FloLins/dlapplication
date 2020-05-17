@@ -40,7 +40,7 @@ class DropoutNet(nn.Module):
 
         h4 = self.fc2(h3)
         h4 = F.dropout(h4, p=0.5, training=self.training)
-        self.safe_model()
+        #self.safe_model()
         return F.log_softmax(h4, dim=1)
 
     def __str__(self):
